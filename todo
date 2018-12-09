@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# todo list utility
+#
+# One todo list per day
+#
+# Create new todo-list (if not existing) and open file with vim:
+# ./todo
+#
+# Appends text into existing/new todo list of current day:
+# ./todo "A todo list item" 
+#
+# Alternatively:
+# ./todo A new item without using quotes
+
+if [ -z $TODO_PATH ]; then
+	echo "ERROR: TODO_PATH environment variable is not set."
+	echo
+	echo "You can set it with:"
+	echo "export TODO_PATH=\$HOME/Documents/todo"
+	exit 1
+fi
+
+today=$(date +'%Y-%m-%d')
+file_name="${today}.md"
+file="${TODO_PATH}/${file_name}"
+
+if [ ! -f $file ]; then
+	echo -e "# TODO $today\n" > $file 
+fi
+
+if [[ $# -eq 0 ]]; then
+	vim $file
+elif [[ $# -eq 1 ]]; then
+	echo "- $1" >> $file
+else
+	echo "- $*" >> $file
+fi
+
