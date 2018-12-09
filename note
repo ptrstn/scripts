@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# notes utility
+#
+# One file per note
+
+if [ -z $NOTES_PATH ]; then
+	echo "ERROR: NOTES_PATH environment variable is not set."
+	echo
+	echo "You can set it with:"
+	echo "export NOTES_PATH=\$HOME/Documents/notes"
+	exit 1
+fi
+
+if [[ $# -eq 0 ]]; then
+	echo "ERROR: Please enter a note title"
+	exit 1
+fi
+
+title="$*"
+today=$(date +'%Y-%m-%d')
+file_name="${today}-${title// /_}.md"
+file="${NOTES_PATH}/${file_name}"
+
+if [ ! -f $file ]; then
+	echo -e "# $title\n\n*Created on $today*\n\n" > $file 
+fi
+
+vim $file
+
